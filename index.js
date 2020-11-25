@@ -88,48 +88,48 @@ function start () {
   })
   }
   function addDepartment(){
-      console.log('fuck you')
+      console.log('beans')
   }
 
   function addRoles(){
-    console.log('fuck you')
+    console.log('beans')
   }
 
   function addEmployee(){
-    console.log('fuck you')
+    console.log('beans')
   }
 
   function viewDepartments(){
-    console.log('fuck you')
+    console.log('beans')
   }
 
   function viewRoles(){
-    console.log('fuck you')
+    console.log('beans')
   }
 
   function updateManagers(){
-    console.log('fuck you')
+    console.log('beans')
   }
 
   function updateRoles(){
-    console.log('fuck you')
+    console.log('beans')
   }
 
   function viewByManagers(){
-    console.log('fuck you')
+    console.log('beans')
   }
 
   function deleteManagers(){
-    console.log('fuck you')
+    console.log('beans')
   }
   function deleteRoles(){
-    console.log('fuck you')
+    console.log('beans')
   }
   function deleteEmployees(){
-    console.log('fuck you')
+    console.log('beans')
   }
   function viewPayroll(){
-    console.log('fuck you')
+    console.log('beans')
   }
   function viewEmployees(){
       console.log("egg")
