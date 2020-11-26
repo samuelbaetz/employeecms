@@ -1,7 +1,7 @@
 const mysql = require('mysql');
 var figlet = require('figlet');
 const inquirer = require('inquirer');
-
+const cTable = require('console.table');
 const connection = mysql.createConnection({
     host: 'localhost',
     port: 3306,
@@ -13,6 +13,33 @@ const connection = mysql.createConnection({
     if (err) throw err;
     start()
   });
+
+
+  const insertdept = [
+    {
+      type: 'input',
+      message: 'What is the name of the Department?',
+      name: 'insertdept'
+    }
+  ]
+
+  const insertRoles = [
+    {
+      type: 'input',
+      message: 'What is the title of the role?',
+      name: 'inserttitle'
+    },
+    {
+        type: 'input',
+        message: 'What is the salary of this role?',
+        name: 'salary'
+    },
+    {
+        type: 'input',
+        message: 'Provide the department ID',
+        name: 'departid'
+    }
+  ]
 
 function start () {
 
@@ -88,11 +115,42 @@ function start () {
   })
   }
   function addDepartment(){
-      console.log('beans')
+    inquirer.prompt(insertdept)
+    .then((answer) => {
+      connection.query(`INSERT INTO department (name) VALUES ('${answer.insertdept}') `, function(err, res) {
+        if (err) throw err;
+       
+        console.log('Department Added...')
+        
+      });
+      connection.query(`SELECT * FROM department; `, function(err, res) {
+        if (err) throw err;
+        // Log all results of the SELECT statement
+        console.table(res);
+        questions()
+      });
+    })
   }
 
   function addRoles(){
-    console.log('beans')
+  
+    inquirer.prompt(insertRoles)
+    .then((answer) => {
+        
+      connection.query(`INSERT INTO roles (title,salary,department_id) VALUES ('${answer.inserttitle}', '${answer.salary}', '${answer.departid}') `, function(err, res) {
+        if (err) throw err;
+       
+        console.log('Role Added...')
+        
+      });
+      connection.query(`SELECT * FROM roles; `, function(err, res) {
+        if (err) throw err;
+        // Log all results of the SELECT statement
+        console.table(res);
+        questions()
+      });
+     
+    })
   }
 
   function addEmployee(){
@@ -100,11 +158,22 @@ function start () {
   }
 
   function viewDepartments(){
-    console.log('beans')
+    connection.query(`SELECT * FROM department; `, function(err, res) {
+        if (err) throw err;
+        // Log all results of the SELECT statement
+        console.table(res);
+        
+      });
+      start()
   }
 
   function viewRoles(){
-    console.log('beans')
+    connection.query(`SELECT * FROM roles; `, function(err, res) {
+        if (err) throw err;
+        // Log all results of the SELECT statement
+        console.table(res);
+        questions()
+      });
   }
 
   function updateManagers(){
