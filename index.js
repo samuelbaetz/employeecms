@@ -40,6 +40,48 @@ const connection = mysql.createConnection({
         name: 'departid'
     }
   ]
+  const insertEmployee = [
+    {
+      type: 'input',
+      message: 'What is first name of the employee?',
+      name: 'firstname'
+    },
+    {
+        type: 'input',
+        message: 'What is the last name of the employee',
+        name: 'lastname'
+    },
+    {
+        type: 'input',
+        message: 'Provide the Role ID',
+        name: 'role_id'
+    },
+    {
+        type: 'input',
+        message: 'Provide the Manager ID',
+        name: 'manager_id'
+    }
+
+  ]
+
+  const insertManager = [
+    {
+      type: 'input',
+      message: 'What is first name of the manager?',
+      name: 'firstname'
+    },
+    {
+        type: 'input',
+        message: 'What is the last name of the manager',
+        name: 'lastname'
+    },
+    {
+        type: 'input',
+        message: 'Provide the Managers Phone Number',
+        name: 'phone'
+    }
+
+  ]
 
 function start () {
 
@@ -64,7 +106,7 @@ function start () {
         name: 'options',
         type: 'list',
         message: 'Welcome to Employee CMS Plus',
-        choices: ['Add Department', 'Add Role', 'Add Employee', 'View Departments','View Roles','View Employees','Update Employee Roles','Update Employee Managers','View Employees by Manager','Delete Managers','Delete Roles','Delete Employees','View Total Payroll', 'EXIT'],
+        choices: ['Add Department', 'Add Role', 'Add Employee','Add Manager', 'View Departments','View Managers','View Roles','View Employees','Update Employee Roles','Update Employee Managers','View Employees by Manager','Delete Managers','Delete Roles','Delete Employees','View Total Payroll', 'EXIT'],
       })
       .then((answer) => {
         if (answer.options === 'Add Department') {
@@ -106,6 +148,12 @@ function start () {
           if (answer.options === 'View Total Payroll') {
           viewPayroll()
           }
+          if (answer.options === 'View Managers') {
+            viewManager()
+            }
+            if (answer.options === 'Add Manager') {
+            addManager()
+                }
         
 
       if (answer.options === 'EXIT') {
@@ -154,7 +202,23 @@ function start () {
   }
 
   function addEmployee(){
-    console.log('beans')
+    inquirer.prompt(insertEmployee)
+    .then((answer) => {
+        
+      connection.query(`INSERT INTO employee (first_name,last_name,role_id, manager_id) VALUES ('${answer.firstname}', '${answer.lastname}', '${answer.role_id}', '${answer.manager_id}') `, function(err, res) {
+        if (err) throw err;
+       
+        console.log('Employee Added...')
+        
+      });
+      connection.query(`SELECT * FROM employee; `, function(err, res) {
+        if (err) throw err;
+        // Log all results of the SELECT statement
+        console.table(res);
+        questions()
+      });
+     
+    })
   }
 
   function viewDepartments(){
@@ -164,7 +228,7 @@ function start () {
         console.table(res);
         
       });
-      start()
+      questions()
   }
 
   function viewRoles(){
@@ -201,6 +265,38 @@ function start () {
     console.log('beans')
   }
   function viewEmployees(){
-      console.log("egg")
+    connection.query(`SELECT * FROM employee JOIN managers ON employee.manager_id = managers.id; `, function(err, res) {
+        if (err) throw err;
+        // Log all results of the SELECT statement
+        console.table(res);
+        questions()
+      });
   }
+  function addManager(){
+    inquirer.prompt(insertManager)
+    .then((answer) => {
+        
+      connection.query(`INSERT INTO managers (first_name,last_name,phone) VALUES ('${answer.firstname}', '${answer.lastname}', '${answer.phone}') `, function(err, res) {
+        if (err) throw err;
+       
+        console.log('Manager Added...')
+        
+      });
+      connection.query(`SELECT * FROM managers; `, function(err, res) {
+        if (err) throw err;
+        // Log all results of the SELECT statement
+        console.table(res);
+        questions()
+      });
+     
+    })
+}
+function viewManager(){
+    connection.query(`SELECT * FROM managers; `, function(err, res) {
+        if (err) throw err;
+        // Log all results of the SELECT statement
+        console.table(res);
+        questions()
+      });
+}
 
