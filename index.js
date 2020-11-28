@@ -2,6 +2,7 @@ const mysql = require('mysql');
 var figlet = require('figlet');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
+const chalk = require('chalk');
 const connection = mysql.createConnection({
     host: 'localhost',
     port: 3306,
@@ -83,6 +84,43 @@ const connection = mysql.createConnection({
 
   ]
 
+  const deleteManager = [
+      {
+          type: 'input',
+          message: 'Type in the ID of the manager you would like to delete.',
+          name: 'managerdelete'
+      }
+  ]
+
+  const deletesRoles = [
+    {
+        type: 'input',
+        message: 'Type in the ID of the role you would like to delete.',
+        name: 'roledelete'
+    }
+]
+
+const deleteEmploy = [
+    {
+        type: 'input',
+        message: 'Type in the First Name of the employee you would like to delete.',
+        name: 'deleteemploy'
+    }
+]
+const upemployRole = [
+    {
+        type: 'input',
+        message: 'What employee would you like to update?',
+        name: 'upemploy'
+    },
+    {
+        type: 'input',
+        message: 'What role would you like to update them to?',
+        name: 'uproleid'
+    }
+]
+
+
 function start () {
 
    
@@ -93,7 +131,7 @@ function start () {
             console.dir(err);
             return;
         }
-        console.log(data);
+        console.log(chalk.greenBright(data));
         questions()
     });
 
@@ -133,9 +171,7 @@ function start () {
           if (answer.options === 'Update Employee Managers') {
             updateManagers()
           }
-          if (answer.options === 'View Employees by Manager') {
-            viewByManagers()
-          }
+          
           if (answer.options === 'Delete Managers') {
             deleteManagers()
           }
@@ -226,9 +262,9 @@ function start () {
         if (err) throw err;
         // Log all results of the SELECT statement
         console.table(res);
-        
+        questions()
       });
-      questions()
+      
   }
 
   function viewRoles(){
@@ -241,31 +277,87 @@ function start () {
   }
 
   function updateManagers(){
-    console.log('beans')
+  
+     
   }
 
   function updateRoles(){
-    console.log('beans')
+    inquirer.prompt(upemployRole)
+    .then((answer) => {
+      connection.query(`UPDATE employee SET role_id='${answer.upemploy}' WHERE first_name='${answer.uproleid}'; `, function(err, res) {
+        if (err) throw err;
+       
+        console.log('Employee Role Update...')
+        
+      });
+      connection.query(`SELECT employee.first_name AS EMPLOYEE, roles.title AS TITLE, managers.last_name AS MANAGER, department.name AS DEPARTMENT FROM (((employee INNER JOIN managers ON employee.manager_id = managers.id) INNER JOIN roles ON employee.role_id = roles.id) INNER JOIN department ON roles.id = department.id); `, function(err, res) {
+        if (err) throw err;
+        // Log all results of the SELECT statement
+        console.table(res);
+        questions()
+      });
+  })
   }
 
-  function viewByManagers(){
-    console.log('beans')
-  }
 
-  function deleteManagers(){
-    console.log('beans')
+ function deleteManagers (){
+   
+    inquirer.prompt(deleteManager)
+    .then((answer) => {
+      connection.query(`DELETE FROM managers WHERE id='${answer.managerdelete}'; `, function(err, res) {
+        if (err) throw err;
+       
+        console.log('Manager Deleted...')
+        
+      });
+      connection.query(`SELECT * FROM managers; `, function(err, res) {
+        if (err) throw err;
+        // Log all results of the SELECT statement
+        console.table(res);
+        questions()
+      });
+     
+    })
   }
   function deleteRoles(){
-    console.log('beans')
-  }
+    inquirer.prompt(deletesRoles)
+    .then((answer) => {
+      connection.query(`DELETE FROM roles WHERE id='${answer.roledelete}'; `, function(err, res) {
+        if (err) throw err;
+       
+        console.log('Role Deleted...')
+        
+      });
+      connection.query(`SELECT * FROM roles; `, function(err, res) {
+        if (err) throw err;
+        // Log all results of the SELECT statement
+        console.table(res);
+        questions()
+      });
+  })
+}
   function deleteEmployees(){
-    console.log('beans')
+    inquirer.prompt(deleteEmploy)
+    .then((answer) => {
+      connection.query(`DELETE FROM employee WHERE first_name='${answer.deleteemploy}'; `, function(err, res) {
+        if (err) throw err;
+       
+        console.log('Employee Deleted...')
+        
+      });
+      connection.query(`SELECT * FROM employee; `, function(err, res) {
+        if (err) throw err;
+        // Log all results of the SELECT statement
+        console.table(res);
+        questions()
+      });
+  })
   }
   function viewPayroll(){
     console.log('beans')
   }
   function viewEmployees(){
-    connection.query(`SELECT * FROM employee JOIN managers ON employee.manager_id = managers.id; `, function(err, res) {
+    connection.query(`SELECT employee.first_name AS EMPLOYEE, roles.title AS TITLE, managers.last_name AS MANAGER, department.name AS DEPARTMENT FROM (((employee INNER JOIN managers ON employee.manager_id = managers.id) INNER JOIN roles ON employee.role_id = roles.id) INNER JOIN department ON roles.id = department.id);  `, function(err, res) {
         if (err) throw err;
         // Log all results of the SELECT statement
         console.table(res);
