@@ -168,9 +168,6 @@ function start () {
           if (answer.options === 'Update Employee Roles') {
            updateRoles()
           }
-          if (answer.options === 'Update Employee Managers') {
-            updateManagers()
-          }
           
           if (answer.options === 'Delete Managers') {
             deleteManagers()
@@ -276,11 +273,7 @@ function start () {
       });
   }
 
-  function updateManagers(){
   
-     
-  }
-
   function updateRoles(){
     inquirer.prompt(upemployRole)
     .then((answer) => {
@@ -354,7 +347,12 @@ function start () {
   })
   }
   function viewPayroll(){
-    console.log('beans')
+    connection.query(`SELECT SUM(salary) AS Total_Payroll FROM roles; `, function(err, res) {
+        if (err) throw err;
+        // Log all results of the SELECT statement
+        console.table(res);
+        questions()
+      });
   }
   function viewEmployees(){
     connection.query(`SELECT employee.first_name AS EMPLOYEE, roles.title AS TITLE, managers.last_name AS MANAGER, department.name AS DEPARTMENT FROM (((employee INNER JOIN managers ON employee.manager_id = managers.id) INNER JOIN roles ON employee.role_id = roles.id) INNER JOIN department ON roles.id = department.id);  `, function(err, res) {

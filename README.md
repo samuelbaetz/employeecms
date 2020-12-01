@@ -3,7 +3,7 @@
 The premier employee tracking application
 
 ![employcms](test.png)
-
+![viewdepart](viewdepartments.gif)
 ## Dependencies
 * Chalk
 * Inquirer
