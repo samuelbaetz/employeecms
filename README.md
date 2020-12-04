@@ -12,6 +12,9 @@ The premier employee tracking application
 * MySQL
 
 ## How to Run the Application
+``` npm install chalk inquirer figlet console.table mysql ```
+
+
 ``` node index.js ```
 
 ## Uses
